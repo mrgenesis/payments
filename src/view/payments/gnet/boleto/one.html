@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   
+    <title>Gerar boleto</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+        * {padding:0;margin:0;box-sizing:border-box;}
+        html,body{height:100%;font-family: 'Robo', sans-serif;}
+
+        .main {width:100%;height:inherit; display:flex;justify-content:center;align-items:center;}
+        a {text-decoration:none;}
+        .main .form input{margin: 25px 0 5px 0;width:100%;padding: 10px 20px;font-size: 20px;border-radius: 10px;border-color: #c7c7c7;background-color:#eee;color:#2a2a2a;}
+        .main .form {width:inherit;position:relative;}
+        .content{width: 300px;min-width: 250px;}
+        
+        .btn{background-color:#eee;width:100%;padding: 15px;border-radius: 10px;float:left;text-align: center;color:#848484;transition:1s;}
+        hr{margin:70px 0 5px 0;width:100%;}
+        .main .form p{font-size:10px;margin:7px 0;}
+        .main p.error{color:red;font-weight:500;padding-top:15px;font-size:12px;}
+        
+    </style>
+    
+    <script>
+        let GB = {};
+    </script>
+ 
+</head>
+<body>
+
+    <div class="main">
+        <div class="content">
+            <form class="form">
+                
+                 
+                <input type="text" id="cpf" name="cpf" placeholder="Digite seu CPF ou CNPJ">
+                <a id="createBankingBillet" class="btn" href="javascript:void(0)">Gerar Boleto</a>
+                <p id="error" class="error"></p>
+                <hr>
+                <p>Por que devo informar um CPF ou CNPJ?</p>
+                <a href=""><p>Política de Privacidade</p></a>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        function validationCPF(CPFOrCNPJ) {
+            
+            let secundDigit = {CPF: 9, CNPJ: 12},
+                length = CPFOrCNPJ.length,
+                isCPFOrCNPJ = (length === 11) ? "CPF" : "CNPJ",
+                lenAllow = length === 11 || length === 14,
+                partBasic = CPFOrCNPJ.substr(0, secundDigit[isCPFOrCNPJ]),
+                first = 0,
+                secund = 0,
+                result = false;
+                
+            console.log("is str and 11 or 14 char:", !(typeof CPFOrCNPJ === "string" && lenAllow)); ///////////////////////////////////////////////////////////
+            console.log('typeof CPFOrCNPJ === "string"', typeof CPFOrCNPJ === "string", "lenAllow:", lenAllow); ///////////////////////////////////////////////////////////
+            if (!(typeof CPFOrCNPJ === "string" && lenAllow)) {
+                GB.error = {status: false, msg: "CPF/CNPJ deve ter 11 ou 14 caracteres. Também deve ser uma string. Ref.: CPFOrCNPJ validation."};
+                return false;
+            }
+            
+             console.log("length", length); /////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////// CPF
+            if (length === 11) {
+                for (let i = 0, aux = 0, max = partBasic.length, multi = 10; i < max; i = i + 1, multi = multi - 1) {
+                    aux = +partBasic[i];
+                    first = first + (aux * multi);
+                }
+                first = first % 11;
+                first = (first === 0 || first === 1) ? 0 : 11 - first;
+                partBasic = partBasic + "" + first;
+            
+                for (let i = 0, aux = 0, max = partBasic.length, multi = 11; i < max; i = i + 1, multi = multi - 1) {
+                    aux = +partBasic[i];
+                    secund = secund + (aux * multi);
+                }
+                secund = secund % 11;
+                secund = (secund === 0 || secund === 1) ? 0 : 11 - secund;
+                partBasic = partBasic + "" + secund;
+            } else {
+            
+                /////////////////////////////////////////// CNPJ
+                //5,4,3,2,9,8,7,6,5,4,3 e 2
+                for (let i = 0, max = partBasic.length, aux = 0, multi = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]; i < max; i = i + 1) {
+                    console.log(partBasic, aux, multi[i]); /////////////////////////////////////////////////////////
+                    aux = +partBasic[i];
+                    first += aux * multi[i];
+                }
+                first = first % 11;
+                first = (first < 2) ? 0 : 11 - first;
+                partBasic += "" + first;
+                console.log("first CPNJ:", first); /////////////////////////////////////////////////////////
+                
+                //6,5,4,3,2,9,8,7,6,5,4,3 e 2
+                for (let i = 0, max = partBasic.length, aux = 0, multi = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]; i < max; i = i + 1) {
+                    console.log(partBasic, aux, multi[i]); /////////////////////////////////////////////////////////
+                    aux = +partBasic[i];
+                    secund += aux * multi[i];
+                }
+                secund = secund % 11;
+                secund = (secund < 2) ? 0 : 11 - secund;
+                partBasic += "" + secund;
+                console.log("secund CPNJ:", secund); /////////////////////////////////////////////////////////
+                console.log("partBasic:", partBasic); /////////////////////////////////////////////////////////
+            }
+            
+            
+            
+            
+            
+            ////////////////////////////////////////
+            result = partBasic === CPFOrCNPJ;
+            if (!result) {
+                GB.error = {status: false, msg: "CPF/CNPJ inválido."};
+            }
+            
+            return result;
+        }
+
+        (function (GB) {
+            GB.getParam = (function () {
+                let obj = {},
+                    get = window.location.search.substr(1).split("&");
+            
+                for (let i = 0, max = get.length, temp = ""; i < max; i = i + 1) {
+                    temp =  get[i].split("=");
+                    obj[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
+                }
+                return obj;
+            })();
+            GB.validation = false;
+            GB.error = {msg: "O campo deve ter 11 ou 14 caracteres."};
+            
+        })(GB);
+        
+        function getBankingBillet(getParam, cpf) {
+            (async () => {
+                let res = await fetch("/boleto/one", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        "customer": {
+                            "name": "From navegation 2",
+                            "phone": "67984249235",
+                            "cpf": "11144477735"
+                        },
+                        "products": {
+                            "name": "List produto navegation",
+                            "value": 7700,
+                            "amount": 1
+                        }
+            
+                    }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+                const result = await res.json();
+                console.log("Resposta:", result);
+            })();
+        }
+        document.getElementById("cpf").addEventListener("keyup", function (event) {
+            
+            let v = this.value,
+                ele = document.getElementById("createBankingBillet"),
+                length = v.length,
+                lenAllow = length === 11 || length === 14;
+                
+            GB.validation = lenAllow;
+            
+            if(!Number.isInteger(+v[v.length - 1])) {
+                v = v.substr(0, v.length - 1);
+            }
+            v = v.replace(/\s/g, "");
+            console.log("v", v); ///////////////////////////////////////////////
+            this.value = v;
+            if (lenAllow) {
+                GB.validation = validationCPF(v);
+            }
+            if (GB.validation) {
+                ele.style.backgroundColor = "#2a2a2a";
+                ele.style.color = "#fff";
+            } else {
+                GB.validation = false;
+                ele.style.backgroundColor = "#eee";
+                ele.style.color = "#848484";
+            }
+            
+        });
+        document.querySelector("#createBankingBillet").addEventListener("click", function () {
+            if (validationCPF(document.querySelector("input").value)) {
+                getBankingBillet(GB.getParam, document.querySelector("input").value);
+                console.log(GB.getParam, document.querySelector("input").value); ///////////////////
+                console.log(GB); ///////////////////
+            } else {
+                validationCPF(document.querySelector("input").value);
+                document.getElementById("error").innerHTML = GB.error.msg;
+            }
+        });
+    </script>
+
+</body>
+</html>
