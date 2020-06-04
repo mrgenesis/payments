@@ -60,14 +60,12 @@
                 secund = 0,
                 result = false;
                 
-            console.log("is str and 11 or 14 char:", !(typeof CPFOrCNPJ === "string" && lenAllow)); ///////////////////////////////////////////////////////////
             console.log('typeof CPFOrCNPJ === "string"', typeof CPFOrCNPJ === "string", "lenAllow:", lenAllow); ///////////////////////////////////////////////////////////
             if (!(typeof CPFOrCNPJ === "string" && lenAllow)) {
                 GB.error = {status: false, msg: "CPF/CNPJ deve ter 11 ou 14 caracteres. Também deve ser uma string. Ref.: CPFOrCNPJ validation."};
                 return false;
             }
             
-             console.log("length", length); /////////////////////////////////////////////////////////
             ///////////////////////////////////////////////// CPF
             if (length === 11) {
                 for (let i = 0, aux = 0, max = partBasic.length, multi = 10; i < max; i = i + 1, multi = multi - 1) {
@@ -90,36 +88,28 @@
                 /////////////////////////////////////////// CNPJ
                 //5,4,3,2,9,8,7,6,5,4,3 e 2
                 for (let i = 0, max = partBasic.length, aux = 0, multi = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]; i < max; i = i + 1) {
-                    console.log(partBasic, aux, multi[i]); /////////////////////////////////////////////////////////
                     aux = +partBasic[i];
                     first += aux * multi[i];
                 }
                 first = first % 11;
                 first = (first < 2) ? 0 : 11 - first;
                 partBasic += "" + first;
-                console.log("first CPNJ:", first); /////////////////////////////////////////////////////////
                 
                 //6,5,4,3,2,9,8,7,6,5,4,3 e 2
                 for (let i = 0, max = partBasic.length, aux = 0, multi = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]; i < max; i = i + 1) {
-                    console.log(partBasic, aux, multi[i]); /////////////////////////////////////////////////////////
                     aux = +partBasic[i];
                     secund += aux * multi[i];
                 }
                 secund = secund % 11;
                 secund = (secund < 2) ? 0 : 11 - secund;
                 partBasic += "" + secund;
-                console.log("secund CPNJ:", secund); /////////////////////////////////////////////////////////
-                console.log("partBasic:", partBasic); /////////////////////////////////////////////////////////
             }
             
-            
-            
-            
-            
-            ////////////////////////////////////////
             result = partBasic === CPFOrCNPJ;
             if (!result) {
                 GB.error = {status: false, msg: "CPF/CNPJ inválido."};
+            } else {
+                GB.cpf = CPFOrCNPJ;
             }
             
             return result;
@@ -132,7 +122,7 @@
             
                 for (let i = 0, max = get.length, temp = ""; i < max; i = i + 1) {
                     temp =  get[i].split("=");
-                    obj[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
+                    obj[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1].replace(/\+/g, " "));
                 }
                 return obj;
             })();
@@ -142,18 +132,24 @@
         })(GB);
         
         function getBankingBillet(getParam, cpf) {
+            let result = {},
+                valor = GB.getParam.sellingcurrencyamount.split(".");
+                form = (valor[1].length === 1) ? valor[1] + "" + 0 : "";
+
+                valor = valor[0] + "" + form;
+
             (async () => {
-                let res = await fetch("/boleto/one", {
+                await fetch("/boleto/one", {
                     method: "POST",
                     body: JSON.stringify({
                         "customer": {
-                            "name": "From navegation 2",
-                            "phone": "67984249235",
-                            "cpf": "11144477735"
+                            "name": GB.getParam.name,
+                            "phone": GB.getParam.telNo,
+                            "cpf": GB.cpf
                         },
                         "products": {
-                            "name": "List produto navegation",
-                            "value": 7700,
+                            "name": `ID: ${GB.getParam.paymenttypeid}, Usuário: ${GB.getParam.userid}, ${GB.getParam.emailAddr}`,
+                            "value": valor,
                             "amount": 1
                         }
             
@@ -161,9 +157,12 @@
                     headers: {
                         "Content-Type": "application/json"
                     }
+                }).then(data => data.json()).then(data => {
+                    GB.resultadoObj = data;
+
                 });
-                const result = await res.json();
-                console.log("Resposta:", result);
+
+                location.href = GB.resultadoObj.data.pdf.charge;
             })();
         }
         document.getElementById("cpf").addEventListener("keyup", function (event) {
@@ -179,7 +178,6 @@
                 v = v.substr(0, v.length - 1);
             }
             v = v.replace(/\s/g, "");
-            console.log("v", v); ///////////////////////////////////////////////
             this.value = v;
             if (lenAllow) {
                 GB.validation = validationCPF(v);
@@ -196,9 +194,7 @@
         });
         document.querySelector("#createBankingBillet").addEventListener("click", function () {
             if (validationCPF(document.querySelector("input").value)) {
-                getBankingBillet(GB.getParam, document.querySelector("input").value);
-                console.log(GB.getParam, document.querySelector("input").value); ///////////////////
-                console.log(GB); ///////////////////
+                getBankingBillet(GB.getParam, document.querySelector("input").value);                
             } else {
                 validationCPF(document.querySelector("input").value);
                 document.getElementById("error").innerHTML = GB.error.msg;
