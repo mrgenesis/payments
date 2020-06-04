@@ -46,7 +46,7 @@ router.post('/one', (req, res) => {
         gn.oneStep({}, paymentBody)
             .then((data) => {
                 console.log(data);
-                res.status(200).json(data);
+                res.status(201).send(data);   
             }).catch((err) => {
                 console.log(`
                 ########### ERROR ###########
