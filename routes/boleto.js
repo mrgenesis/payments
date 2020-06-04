@@ -1,5 +1,6 @@
 const router = require('express').Router(),
       moment = require('moment'),
+      sandbox = process.env.ENVIRONMENT === "sandbox",
       Gerencianet = require('gn-api-sdk-node');
 
 router.get('/test', (req, res) => {
@@ -12,7 +13,7 @@ router.post('/one', (req, res) => {
     const options = {
             client_id: process.env.ID,
             client_secret: process.env.SECRET,
-            sandbox: true
+            sandbox: sandbox
         },
         dueDate = moment().add(3, 'days').format('YYYY-MM-DD'),
         paymentBody = {
