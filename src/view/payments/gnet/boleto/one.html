@@ -23,7 +23,25 @@
         hr{margin:70px 0 5px 0;width:100%;}
         .main .form p{font-size:10px;margin:7px 0;}
         .main p.error{color:red;font-weight:500;padding-top:15px;font-size:12px;}
-        
+        .loader{
+            display: inline-block;
+            border: 8px solid #c7c7c7;
+            border-left-color: #2a2a2a;
+            height: 15px;
+            width: 15px;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            visibility: hidden;
+
+        }
+        @keyframes spin {
+            to { transform: rotate(368deg); }
+        }
+        .txt-btn {
+            height: 35px;
+            width: 100px;
+            display: inline-block;
+        }
     </style>
     
     <script>
@@ -39,7 +57,7 @@
                 
                  
                 <input type="text" id="cpf" name="cpf" placeholder="Digite seu CPF ou CNPJ">
-                <a id="createBankingBillet" class="btn" href="javascript:void(0)">Gerar Boleto</a>
+                <a id="createBankingBillet" class="btn" href="javascript:void(0)"><span id="txt-gerar-boleto">Gerar Boleto </span>&nbsp;<span id="loader" class="loader"></span></a>
                 <p id="error" class="error"></p>
                 <hr>
                 <p>Por que devo informar um CPF ou CNPJ?</p>
@@ -49,7 +67,7 @@
     </div>
     
     <script>
-        function validationCPF(CPFOrCNPJ) {
+       /* function validationCPF(CPFOrCNPJ) {
             
             let secundDigit = {CPF: 9, CNPJ: 12},
                 length = CPFOrCNPJ.length,
@@ -60,7 +78,6 @@
                 secund = 0,
                 result = false;
                 
-            console.log('typeof CPFOrCNPJ === "string"', typeof CPFOrCNPJ === "string", "lenAllow:", lenAllow); ///////////////////////////////////////////////////////////
             if (!(typeof CPFOrCNPJ === "string" && lenAllow)) {
                 GB.error = {status: false, msg: "CPF/CNPJ deve ter 11 ou 14 caracteres. Também deve ser uma string. Ref.: CPFOrCNPJ validation."};
                 return false;
@@ -80,6 +97,8 @@
                     aux = +partBasic[i];
                     secund = secund + (aux * multi);
                 }
+                console.log("secund", secund)
+
                 secund = secund % 11;
                 secund = (secund === 0 || secund === 1) ? 0 : 11 - secund;
                 partBasic = partBasic + "" + secund;
@@ -131,7 +150,7 @@
             
         })(GB);
         
-        function getBankingBillet(getParam, cpf) {
+        /*function getBankingBillet(getParam, cpf) {
             let result = {},
                 valor = GB.getParam.sellingcurrencyamount.split(".");
                 form = (valor[1].length === 1) ? valor[1] + "" + 0 : "";
@@ -166,7 +185,7 @@
             })();
         }
         document.getElementById("cpf").addEventListener("keyup", function (event) {
-            
+            /*
             let v = this.value,
                 ele = document.getElementById("createBankingBillet"),
                 length = v.length,
@@ -192,14 +211,44 @@
             }
             
         });
-        document.querySelector("#createBankingBillet").addEventListener("click", function () {
+        /*document.querySelector("#createBankingBillet").addEventListener("click", function () {
             if (validationCPF(document.querySelector("input").value)) {
                 getBankingBillet(GB.getParam, document.querySelector("input").value);                
             } else {
                 validationCPF(document.querySelector("input").value);
                 document.getElementById("error").innerHTML = GB.error.msg;
             }
+        });*/
+    </script>
+    <script type="module">
+        let main;
+        import { publisher } from '/v/js/observers.js';
+        import { makePublisher } from '/v/js/main.js';
+        import { get } from '/v/js/get.js';
+        import { validationCPF } from '/v/js/validation-cpf.js';
+        import { keyup } from '/v/js/keyup.js';
+        import { boleto } from '/v/js/boleto.js';
+        main = makePublisher(publisher);
+        main.await = false;
+        get(window.location.search.substr(1), main, "rcData");
+
+        document.getElementById("cpf").addEventListener("keyup", function (event) { 
+            keyup(this, document.getElementById("createBankingBillet"), main);
         });
+
+        document.querySelector("#createBankingBillet").addEventListener("click", function () {
+            let ready = main.cpf === document.getElementById("cpf").value && main.enableBtn && !main.await;
+            main.await = true;
+            boleto(main); 
+            if (ready) {
+                boleto(main);
+                document.getElementById("txt-gerar-boleto").innerHTML = "Aguarde... ";
+                document.getElementById("loader").style.visibility = "initial";
+                document.getElementById("cpf").disabled = true;
+            }
+        });
+        
+
     </script>
 
 </body>
