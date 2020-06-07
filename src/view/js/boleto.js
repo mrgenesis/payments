@@ -30,7 +30,7 @@ const boleto = function (main) {
             console.log(main.boleto.error_description.message)
 
         } else {
-            location.href = main.boleto.data.pdf.charge;
+            document.getElementById("download").innerHTML = `<a target="_blank" class="btn btn-download" href="${main.boleto.data.pdf.charge}">&DownArrowBar; Baixar Boleto</a>`;
         }
         // 
     })();

@@ -34,6 +34,8 @@
             visibility: hidden;
 
         }
+        .btn-download{background: #fff;font-weight: 900;border: 1px #c7c7c7 solid;}
+        .btn-download:hover{background: #2a2a2a;color:#fff;}
         @keyframes spin {
             to { transform: rotate(368deg); }
         }
@@ -52,7 +54,8 @@
                 
                  
                 <input type="text" id="cpf" name="cpf" placeholder="Digite um CPF">
-                <a id="createBankingBillet" class="btn" href="javascript:void(0)"><span id="txt-gerar-boleto">Gerar Boleto </span>&nbsp;<span id="loader" class="loader"></span></a>
+                <span id="download"><a id="createBankingBillet" class="btn" href="javascript:void(0)"><span id="txt-gerar-boleto">Gerar Boleto </span>&nbsp;<span id="loader" class="loader"></span></a></span>
+
                 <p id="error" class="error"></p>
                 <hr>
                 <p>Por que devo informar um CPF?</p>
