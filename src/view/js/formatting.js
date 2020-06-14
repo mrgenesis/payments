@@ -2,22 +2,26 @@ function formatting (main) {
  
     switch (main.config.formatting) {
     case "name":
-        if (main.validations.name) {
-            main.info.elements.validationIconName.className = "validation-icon true-icon";
-            main.info.elements.validationIconName.innerHTML = main.info.assets.icons.t;
-        } else {
-            main.info.elements.validationIconName.className = "validation-icon false-icon";
-            main.info.elements.validationIconName.innerHTML = main.info.assets.icons.f;
+        if (main.info.elements.phone) {
+            if (main.validations.name) {
+                main.info.elements.validationIconName.className = "validation-icon true-icon";
+                main.info.elements.validationIconName.innerHTML = main.info.assets.icons.t;
+            } else {
+                main.info.elements.validationIconName.className = "validation-icon false-icon";
+                main.info.elements.validationIconName.innerHTML = main.info.assets.icons.f;
+            }
         }
         break;
 
     case "phone":
-        if (main.validations.phone) {
-            main.info.elements.validationIconPhone.className = "validation-icon true-icon";
-            main.info.elements.validationIconPhone.innerHTML = main.info.assets.icons.t;
-        } else {
-            main.info.elements.validationIconPhone.className = "validation-icon false-icon";
-            main.info.elements.validationIconPhone.innerHTML = main.info.assets.icons.f;
+        if (main.info.elements.phone) {
+            if (main.validations.phone) {
+                main.info.elements.validationIconPhone.className = "validation-icon true-icon";
+                main.info.elements.validationIconPhone.innerHTML = main.info.assets.icons.t;
+            } else {
+                main.info.elements.validationIconPhone.className = "validation-icon false-icon";
+                main.info.elements.validationIconPhone.innerHTML = main.info.assets.icons.f;
+            }
         }
         break;
 
@@ -34,8 +38,8 @@ function formatting (main) {
     case "bankingBillet":
         main.info.elements.btnTxt.innerHTML = "Aguarde... ";
         main.info.elements.loader.style.visibility = "initial";
-        main.info.elements.name.disabled = true;
-        main.info.elements.phone.disabled = true;
+        main.info.elements.name ? main.info.elements.name.disabled =  true : "";
+        main.info.elements.phone ? main.info.elements.phone.disabled = true : "";
         main.info.elements.cpf.disabled = true;
         break;
     case "bankingBilletLink":
