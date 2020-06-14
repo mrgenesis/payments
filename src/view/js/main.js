@@ -62,8 +62,8 @@ if (main.info.elements.phone) {
 
 import { validationCPF } from "/v/js/validation-cpf.js";
 import { onlyNumbers } from '/v/js/only-numbers.js';
-main.subscribe(validationCPF, "validationCPF");
 main.subscribe(onlyNumbers, "validationCPF");
+main.subscribe(validationCPF, "validationCPF");
 main.info.elements.cpf.addEventListener("keyup", function () {
     main.notify(configMain({validating: this.value, input: this, formatting: "cpf"}, main), "validationCPF");
 });
@@ -74,6 +74,15 @@ main.subscribe(bankingBillet, "bankingBillet");
 main.subscribe(formatting, "bankingBillet");
 main.subscribe(formatting, "link");
 main.info.elements.btn.addEventListener("click", function () {
+    if (main.info.elements.phone) {
+        main.notify(configMain({formatting: "phone", validating: main.info.elements.phone.value}, main), "validationPhone");
+    }
+    if (main.info.elements.name) {
+        main.notify(configMain({formatting: "name", validating: main.info.elements.name.value}, main), "validationName");
+    }
+
+    main.notify(configMain({validating: main.info.elements.cpf.value, input: main.info.elements.cpf, formatting: "cpf"}, main), "validationCPF");
+
     if (main.validations.name && main.validations.phone && main.validations.cpf && !main.info.await) {
         main.notify(configMain({formatting: "bankingBillet"}, main), "bankingBillet");
     }
