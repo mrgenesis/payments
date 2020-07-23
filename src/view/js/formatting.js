@@ -2,7 +2,7 @@ function formatting (main) {
  
     switch (main.config.formatting) {
     case "name":
-        if (main.info.elements.phone) {
+        if (main.info.elements.name) {
             if (main.validations.name) {
                 main.info.elements.validationIconName.className = "validation-icon true-icon";
                 main.info.elements.validationIconName.innerHTML = main.info.assets.icons.t;
