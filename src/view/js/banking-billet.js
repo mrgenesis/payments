@@ -1,7 +1,31 @@
-function centavos (price, aux = "") {
-    price = price.split("."),
-    aux = (price[1].length === 1) ? price[1] + "" + 0 : "";
-    return price[0] + "" + aux;
+function princeGnetDefault(num){
+    let numArr
+    , decimal = ""
+    , decimalLen;
+
+    numArr = num.toString().split(".");
+
+    if (numArr[1]) {
+        decimalLen = numArr[1].length;
+    } else {
+        decimalLen = 0;
+    }
+
+    switch (decimalLen) {
+    case 0:
+        decimal = "00";
+        break;
+    case 1:
+        decimal = numArr[1] + "" + "0";
+        break;
+    case 2:
+        decimal = numArr[1];
+        break;
+    default:
+        decimal = numArr[1].substr(0, 2);
+    }
+
+    return numArr[0] + "" + decimal;
 }
 import { configMain } from '/v/js/config-main.js';
 
@@ -11,7 +35,7 @@ const bankingBillet = function (main) {
         form = (valor[1].length === 1) ? valor[1] + "" + 0 : "";
 
     main.get.sellingcurrencyamount = valor[0] + "" + form;*/
-    main.get.sellingcurrencyamount = centavos(main.get.sellingcurrencyamount);
+    main.get.sellingcurrencyamount = princeGnetDefault(main.get.sellingcurrencyamount);
     (async () => {
         await fetch("/boleto/one", {
             method: "POST",
