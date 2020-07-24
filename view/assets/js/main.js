@@ -31,21 +31,21 @@ main.validations = {
     name: false, phone: false, cpf: false
 };
 
-import { publisher } from '/v/js/observers.js';
-import { makePublisher } from '/v/js/make-publisher.js';
-import { configMain } from '/v/js/config-main.js';
+import { publisher } from './observers.js';
+import { makePublisher } from './make-publisher.js';
+import { configMain } from './config-main.js';
 
 makePublisher(publisher, main);
 
-import { get } from '/v/js/get.js';
+import { get } from './get.js';
 main.subscribe(get, "get");
 main.notify({get: window.location.search.substr(1), main: main, space: "get"}, "get");
 
-import { validationPhone } from "/v/js/validation-phone.js";
+import { validationPhone } from "./validation-phone.js";
 main.subscribe(validationPhone, "validationPhone");
 main.notify(configMain({createHTML: true, formatting: "phone", validating: main.get.telNo}, main), "validationPhone");
 
-import { validationName } from "/v/js/validation-name.js";
+import { validationName } from "./validation-name.js";
 main.subscribe(validationName, "validationName");
 main.notify(configMain({createHTML: true, formatting: "name", validating: main.get.name}, main), "validationName");
 
@@ -60,16 +60,16 @@ if (main.info.elements.phone) {
     });
 }
 
-import { validationCPF } from "/v/js/validation-cpf.js";
-import { onlyNumbers } from '/v/js/only-numbers.js';
+import { validationCPF } from "./validation-cpf.js";
+import { onlyNumbers } from './only-numbers.js';
 main.subscribe(onlyNumbers, "validationCPF");
 main.subscribe(validationCPF, "validationCPF");
 main.info.elements.cpf.addEventListener("keyup", function () {
     main.notify(configMain({validating: this.value, input: this, formatting: "cpf"}, main), "validationCPF");
 });
 
-import { bankingBillet } from "/v/js/banking-billet.js";
-import { formatting } from "/v/js/formatting.js";
+import { bankingBillet } from "./banking-billet.js";
+import { formatting } from "./formatting.js";
 main.subscribe(bankingBillet, "bankingBillet");
 main.subscribe(formatting, "bankingBillet");
 main.subscribe(formatting, "link");

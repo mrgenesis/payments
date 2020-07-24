@@ -27,17 +27,13 @@ function princeGnetDefault(num){
 
     return numArr[0] + "" + decimal;
 }
-import { configMain } from '/v/js/config-main.js';
+import { configMain } from './config-main.js';
 
 const bankingBillet = function (main) {
     
-    /*let valor = main.get.sellingcurrencyamount.split("."),
-        form = (valor[1].length === 1) ? valor[1] + "" + 0 : "";
-
-    main.get.sellingcurrencyamount = valor[0] + "" + form;*/
     main.get.sellingcurrencyamount = princeGnetDefault(main.get.sellingcurrencyamount);
     (async () => {
-        await fetch("/boleto/one", {
+        await fetch("/gerencianet/banking-billet", {
             method: "POST",
             body: JSON.stringify({
                 "customer": {
@@ -58,7 +54,7 @@ const bankingBillet = function (main) {
         }).then(data => data.json()).then(data => {
             main.bankingBillet = data;
         });
-
+        
         if (main.bankingBillet.error) {
             console.log(main.bankingBillet.error_description.message)
 

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   
+    <title>Gerar boleto</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+
+    <div class="main">
+        <div class="content">
+            <form class="form">
+                
+                 
+                <div class="fields">
+                    <input type="text" id="cpf" name="cpf" placeholder="CPF: 11188844433">
+                    <span id="validation-icon-cpf" class="validation-icon"></span>
+                </div>
+                <span id="download">
+                    <a id="createBankingBillet" class="btn" href="javascript:void(0)">
+                        <span id="btn-txt">Gerar Boleto </span>
+                        &nbsp;
+                        <span id="loader" class="loader"></span>
+                    </a>
+                </span>
+
+                <p id="error" class="error"></p>
+                <hr>
+                <p>Por que devo informar um CPF?</p>
+                <a href="javascript:void(0);"><p>Política de Privacidade</p></a>
+            </form>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { main } from "/assets/js/main.js";        
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+* {padding:0;margin:0;box-sizing:border-box;}
+html,body{height:100%;font-family: 'Robo', sans-serif;}
+
+.main {width:100%;height:inherit; display:flex;justify-content:center;align-items:center;}
+a {text-decoration:none;}
+.main .form input{margin: 5px 0 5px 0;width:100%;padding: 10px 20px;font-size: 15px;border-radius: 10px;border-color: #c7c7c7;background-color:#eee;color:#2a2a2a;}
+.main .form {width:inherit;position:relative;}
+.content{width: 300px;min-width: 250px;}
+.fields{position:relative}
+.validation-icon{position:absolute;font-size:30px;top:4px;right:8px;font-weight:bold}
+.true-icon {color: green}
+.false-icon {color: red}
+
+.btn{background-color:#eee;width:100%;padding: 15px;border-radius: 10px;float:left;text-align: center;color:#848484;transition:1s;}
+hr{margin:70px 0 5px 0;width:100%;}
+.main .form p{font-size:10px;margin:7px 0;}
+.main p.error{color:red;font-weight:500;padding-top:15px;font-size:12px;}
+.loader{
+    display: inline-block;
+    border: 8px solid #c7c7c7;
+    border-left-color: #2a2a2a;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    visibility: hidden;
+}
+.btn-download{background: #fff;font-weight: 900;border: 1px #c7c7c7 solid;}
+.btn-download:hover{background: #2a2a2a;color:#fff;}
+@keyframes spin {
+    to { transform: rotate(368deg); }
+}
+.txt-btn {
+    height: 35px;
+    width: 100px;
+    display: inline-block;
+}

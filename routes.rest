@@ -1,8 +1,0 @@
-### Links da aplicação
-
-POST http://localhost:3000/boleto/one
-Content-Type: application/json
-
-{
-    "test": "test"
-}

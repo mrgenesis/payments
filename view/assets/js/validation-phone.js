@@ -1,4 +1,4 @@
-import { formatting } from '/v/js/formatting.js';
+import { formatting } from './formatting.js';
 function validationPhone(main){
     let model = /^[1-9]{2}9?[0-9]{8}$/;
 

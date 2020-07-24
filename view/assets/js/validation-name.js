@@ -1,4 +1,4 @@
-import { formatting } from '/v/js/formatting.js';
+import { formatting } from './formatting.js';
 function validationName(main){
     let model = /^[ ]*(.+[ ]+)+.+[ ]*$/;
 

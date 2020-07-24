@@ -1,5 +1,5 @@
-import { formatting } from '/v/js/formatting.js';
-import { onlyNumbers } from '/v/js/only-numbers.js';
+import { formatting } from './formatting.js';
+import { onlyNumbers } from './only-numbers.js';
 const validationCPF = function(main) {
     // onlyNumbers(main);
 

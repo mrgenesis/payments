@@ -3,13 +3,7 @@ const router = require('express').Router(),
       sandbox = process.env.ENVIRONMENT === "sandbox",
       Gerencianet = require('gn-api-sdk-node');
 
-router.get('/test', (req, res) => {
-    res.status(200).send(req.body.test);
-});
-router.get('/one', (req, res) => {
-    res.status(200).send("Testing...");
-});
-router.post('/one', (req, res) => {
+router.post('/banking-billet', (req, res) => {
     const options = {
             client_id: process.env.ID,
             client_secret: process.env.SECRET,
@@ -43,7 +37,6 @@ router.post('/one', (req, res) => {
         },
         gn = new Gerencianet(options);
 
-
         gn.oneStep({}, paymentBody)
             .then((data) => {
                 console.log(data);
@@ -55,9 +48,6 @@ router.post('/one', (req, res) => {
                 `);
                 res.status(501).json(err);
             });
-
-    //res.status(201).json(link);
-    
 });
 
-module.exports = router;
+module.exports = app => app.use('/gerencianet', router);

@@ -1,4 +1,4 @@
-import { validationCPF } from "./validation-cpf.js";
+import { validationCPF } from "./assets/js/validation-cpf.js";
 
 const keyup = function (input, forFormat, log) {
     let value = input.value,
